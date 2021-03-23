@@ -10,7 +10,7 @@ prng t;
 void
 oneseq_seed(value s)
 {
-  pcg_oneseq_64_srandom_r(&t,Uint_val(s));
+  pcg_oneseq_64_srandom_r(&t, Uint_val(s));
 }
 
 CAMLprim value
