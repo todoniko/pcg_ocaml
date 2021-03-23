@@ -4,5 +4,4 @@
  (foreign_stubs
   (language c)
   (names pcg_stubs)
-  (flags -O2 -fPIC -I../include/))
- (c_library_flags -lstdc++))
+  (flags -I../include/)))
