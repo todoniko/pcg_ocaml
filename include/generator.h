@@ -26,20 +26,24 @@ inline void pcg_oneseq_64_srandom_r(struct pcg_state_64* rng,
   pcg_oneseq_64_step_r(rng);
 }
 
-inline uint32_t pcg_oneseq_64_xsh_rs_32_random_r(struct pcg_state_64* rng)
-{
-  uint64_t oldstate = rng->state;
-  pcg_oneseq_64_step_r(rng);
-  return pcg_output_xsh_rs_64_32(oldstate);
-}
+#define DE_OUTPUT(SEQ, OP, S, R) \               
+  inline uint ## R ## _t  \     
+  pcg_ ## SEQ ## _ ## S ## _ ## OP ## _ ## R ## _random_r(struct  pcg_state_ ## S ## * rng) \               
+  { \   
+    uint ## S ## _t oldstate = rng->state; \      
+    pcg_ ## SEQ ## _ ## S ## _step_r(rng); \         
+    return pcg_output_ ## OP ## _ ## S ## _ (oldstate); \          
+  } \   
+   \   
+  inline uint ## R ## _t  \     
+  pcg_ ## SEQ ## _ ## S ## _ ## OP ## _ ## R ## _boundedrand_r(struct pcg_state_ ## S ## * rng, uint ## R ## _t bound) \                 
+  { \   
+    uint ## R ## _t threshold = -bound % bound; \     
+    for (;;) { \   
+      uint ## R ## _t r = pcg_ ## SEQ ## _ ## S ## _ ## OP ## _  ## R ## _r andom_r(rng); \                 
+      if (r >= threshold) \   
+        return r % bound; \   
+    } \   
+  }  
 
-inline uint32_t pcg_oneseq_64_xsh_rs_32_boundedrand_r(struct pcg_state_64* rng,
-                                                      uint32_t bound)
-{
-  uint32_t threshold = -bound % bound;
-  for (;;) {
-    uint32_t r = pcg_oneseq_64_xsh_rs_32_random_r(rng);
-    if (r >= threshold)
-      return r % bound;
-  }
-}
+DE_OUTPUT(oneseq, xsh_rs, 64, 32)

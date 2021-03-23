@@ -5,16 +5,21 @@
 #define Val_uint(t) ((Val_int((uint64_t)t)))
 #define Uint_val(V) ((uint64_t)(Int_val(V)))
  
-prng t;
+#define DE_CAML(SEQ, OP, S, R) \
+CAMLprim value \
+SEQ ##_## OP(value unit) \
+{ return Val_uint(pcg_## SEQ ##_## S ##_## OP ##_## R ##_random_r(& SEQ)); } \
+  \
+CAMLprim value \
+SEQ ##_## OP ##_bounded(value b) \
+{ return Val_uint(pcg_## SEQ ##_## S ##_## OP ##_## R ##_boundedrand_r(& SEQ, Uint_val(b))); }
+
+prng oneseq;
 
 void
 oneseq_seed(value s)
 {
-  pcg_oneseq_64_srandom_r(&t, Uint_val(s));
+  pcg_oneseq_64_srandom_r(&oneseq, Uint_val(s));
 }
 
-CAMLprim value
-oneseq_xsh_rs(value unit)
-{
-  return Val_uint(pcg_oneseq_64_xsh_rs_32_random_r(&t));
-}
+DE_CAML(oneseq, xsh_rs, 64, 32)
