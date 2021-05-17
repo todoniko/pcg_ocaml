@@ -4,4 +4,4 @@
  (foreign_stubs
   (language c)
   (names pcg_stubs)
-  (flags -I../include/)))
+  (flags -O2 -I../include/)))

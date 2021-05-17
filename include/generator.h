@@ -26,6 +26,20 @@ inline void pcg_oneseq_64_srandom_r(struct pcg_state_64* rng,
   pcg_oneseq_64_step_r(rng);
 }
 
+inline uint64_t
+pcg_speed_step(uint64_t rn)
+{
+  return rn * PCG_DEFAULT_MUL_64 + PCG_DEFAULT_INC_64;
+}
+
+inline uint64_t
+pcg_speed_seed(uint64_t init)
+{
+  return (PCG_DEFAULT_INC_64 + init)
+    * PCG_DEFAULT_MUL_64
+    + PCG_DEFAULT_INC_64;
+}
+
 #define DE_OUTPUT(SEQ, OP, S, R)                           \
 inline uint ## R ## _t                                     \
 pcg_ ## SEQ ## _ ## S ## _ ## OP ## _ ## R ## _random_r(struct  pcg_state_ ## S * rng) \
